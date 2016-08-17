@@ -17,12 +17,12 @@ var options = nopt({
   'a': ['--all', 'true']
 }, process.argv, 2)
 
-if (options.all) {
-  var main = path.join(process.cwd(), 'main')
+var main = path.join(process.cwd(), 'main')
 
+if (options.all) {
   fs.readdirAsync(main)
     .filter(function (dir) {
-      return fs.statAsync(path.join(main, dir.name))
+      return fs.statAsync(path.join(main, dir))
         .then(function (stat) {
           return stat.isDirectory()
         })
@@ -43,8 +43,7 @@ if (options.all) {
         if (error) {
           console.error('exec error:' + error)
         } else {
-          console.log('Finish：' + info.basename)
-          stdout && console.log(stdout)
+          stdout && console.log('Finish：' + stdout)
           stderr && console.error(stderr)
         }
       })
@@ -53,18 +52,15 @@ if (options.all) {
 else {
   if (options.input.length) {
     for (var i = 0; i < options.input.length; i++) {
-      var command = ['babel']
+      var command = ['babel', 'src', '-d', 'build'].join(' ')
       var dir = options.input[i]
 
-      command = command.concat([dir, '-d', path.join('main', dir, 'build')])
-      command = command.join(' ')
-
-      cp.exec(command, {cwd: path.join(process.cwd())}, function (error, stdout, stderr) {
+      cp.exec(command, {cwd: path.join(process.cwd(), dir)}, function (error, stdout, stderr) {
         if (error) {
           console.error('exec error:' + error)
         } else {
-          console.log(stdout)
-          console.error(stderr)
+          stdout && console.log('Finish：' + stdout)
+          stderr && console.error(stderr)
         }
       })
     }
@@ -73,7 +69,3 @@ else {
     console.error('need input less file')
   }
 }
-
-
-
-
