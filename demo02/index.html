@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../assets/dev/react.js"></script>
+    <script src="../assets/dev/react-dom.js"></script>
+    <script src="../assets/browser.min.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<script type="text/babel" type="text/jsx">
+    var root = document.getElementById('example')
+    var render = ReactDOM.render
+
+    var names = ['Alice', 'Emily', 'Kate']
+
+    var content = <div> {
+        names.map(function (name, index) {
+            var key = [name, '_', index].join('')
+            return <div key={key}>Hello, {name}!</div>
+        })
+    } </div>
+    render(content, root)
+</script>
+</body>
+</html>

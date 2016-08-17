@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../assets/dev/react.js"></script>
+    <script src="../assets/dev/react-dom.js"></script>
+    <script src="../assets/browser.min.js"></script>
+</head>
+<body>
+<div id="example"></div>
+<script type="text/babel" type="text/jsx">
+    var root = document.getElementById('example')
+    var render = ReactDOM.render
+    var createClass = React.createClass
+
+    var Hello = createClass({
+        getInitialState: function () {
+            return {
+                opacity: 1.0
+            }
+        },
+
+        componentDidMount: function () {
+            this.timer = setInterval(function () {
+                var opacity = this.state.opacity
+                opacity -= .05
+
+                if (opacity < 0.1) {
+                    opacity = 1.0
+                }
+
+                this.setState({
+                    opacity: opacity
+                })
+            }.bind(this), 100)
+        },
+
+        render: function () {
+            return (<div>
+                <div style={{opacity: this.state.opacity}}>
+                    Hello {this.props.name}
+                </div>
+            </div>)
+        }
+    })
+
+    var content = <Hello name="world"/>
+    render(content, root)
+</script>
+</body>
+</html>
