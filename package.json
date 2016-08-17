@@ -1,0 +1,13 @@
+{
+  "name": "react-demos",
+  "version": "1.0.0",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "nopt": "^3.0.6",
+    "bluebird": "^3.3.4",
+    "babel": "~5.8.21"
+  },
+  "author": "shangfei.SF",
+  "license": "ISC"
+}

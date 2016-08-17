@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+
+var fs = require('fs')
+var path = require('path')
+var cp = require('child_process')
+
+var nopt = require('nopt')
+var Promise = require('bluebird')
+
+Promise.promisifyAll(fs)
+
+var options = nopt({
+  'input': Array,
+  'all': Boolean
+}, {
+  'i': ['--input'],
+  'a': ['--all', 'true']
+}, process.argv, 2)
+
+if (options.all) {
+  var main = path.join(process.cwd(), 'main')
+
+  fs.readdirAsync(main)
+    .filter(function (dir) {
+      return fs.statAsync(path.join(main, dir.name))
+        .then(function (stat) {
+          return stat.isDirectory()
+        })
+    })
+    .then(function (dirs) {
+      return dirs.map(function (dir) {
+        return {
+          name: dir,
+          input: path.join(main, dir, 'src'),
+          output: path.join(main, dir, 'build'),
+        }
+      })
+    })
+    .map(function (info) {
+      var command = ['babel'].concat([info.input, '-d', info.output]).join(' ')
+
+      cp.exec(command, {cwd: path.join(process.cwd())}, function (error, stdout, stderr) {
+        if (error) {
+          console.error('exec error:' + error)
+        } else {
+          console.log('Finish：' + info.basename)
+          stdout && console.log(stdout)
+          stderr && console.error(stderr)
+        }
+      })
+    })
+}
+else {
+  if (options.input.length) {
+    for (var i = 0; i < options.input.length; i++) {
+      var command = ['babel']
+      var dir = options.input[i]
+
+      command = command.concat([dir, '-d', path.join('main', dir, 'build')])
+      command = command.join(' ')
+
+      cp.exec(command, {cwd: path.join(process.cwd())}, function (error, stdout, stderr) {
+        if (error) {
+          console.error('exec error:' + error)
+        } else {
+          console.log(stdout)
+          console.error(stderr)
+        }
+      })
+    }
+  }
+  else {
+    console.error('need input less file')
+  }
+}
+
+
+
+
