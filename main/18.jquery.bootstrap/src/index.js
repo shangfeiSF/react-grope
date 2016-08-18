@@ -7,7 +7,7 @@ var BootstrapButton = createClass({
     return (
       <a
         {...this.props}
-        href="javascript:;"
+        href="javascript:void(0);"
         role="button"
         className={(this.props.className || '') + ' btn'}
       />
@@ -16,78 +16,76 @@ var BootstrapButton = createClass({
 })
 
 var BootstrapModal = createClass({
-  componentDidMount: function () {
-    $(this.refs.root).modal({
-        backdrop: 'static',
-        keyboard: false,
-        show: false
-      }
-    )
+  OPEN: function () {
+    $(this.refs.self).modal('show')
+  },
 
-    $(this.refs.root).on('hidden.bs.modal', this.handleHidden)
+  CLOSE: function () {
+    $(this.refs.self).modal('hide')
+  },
+
+  componentDidMount: function () {
+    var self = $(this.refs.self)
+
+    self.modal({
+      backdrop: 'static',
+      keyboard: false,
+      show: false /* 模拟框初始显示状态 */
+    })
+
+    self.on('hidden.bs.modal', this.monitorOnHidden)
   },
 
   componentWillUnmount: function () {
-    $(this.refs.root).off('hidden.bs.modal', this.handleHidden)
+    $(this.refs.self).off('hidden.bs.modal', this.monitorOnHidden)
   },
 
-  close: function () {
-    $(this.refs.root).modal('hide')
-  },
-
-  open: function () {
-    $(this.refs.root).modal('show')
-  },
-
-  handleCancel: function () {
-    this.props.onCancel && this.props.onCancel()
-  },
-
-  handleConfirm: function () {
+  monitorOnConfirm: function () {
     this.props.onConfirm && this.props.onConfirm()
   },
 
-  handleHidden: function () {
+  monitorOnCancel: function () {
+    this.props.onCancel && this.props.onCancel()
+  },
+
+  monitorOnHidden: function () {
     this.props.onHidden && this.props.onHidden()
   },
 
   render: function () {
-    var confirmButton = null
-    var cancelButton = null
-
-    if (this.props.confirm) {
-      confirmButton = (
-        <BootstrapButton onClick={this.handleConfirm} className="btn-primary">
+    var confirmButton = this.props.confirm ?
+      (
+        <BootstrapButton onClick={this.monitorOnConfirm} className="btn-primary">
           {this.props.confirm}
         </BootstrapButton>
-      )
-    }
+      ) : null
 
-    if (this.props.cancel) {
-      cancelButton = (
-        <BootstrapButton onClick={this.handleCancel} className="btn-default">
+    var cancelButton = this.props.cancel ?
+      (
+        <BootstrapButton onClick={this.monitorOnCancel} className="btn-default">
           {this.props.cancel}
         </BootstrapButton>
-      )
-    }
+      ) : null
+
+    var closeButton = <button
+      type="button"
+      className="close"
+      onClick={this.monitorOnCancel}
+    > &times; </button>
 
     return (
-      <div className="modal fade" ref="root">
+      <div className="modal fade" ref="self">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <button
-                type="button"
-                className="close"
-                onClick={this.handleCancel}
-              >
-                &times;
-              </button>
+              {closeButton}
               <h3>{this.props.title}</h3>
             </div>
+
             <div className="modal-body">
               {this.props.children}
             </div>
+
             <div className="modal-footer">
               {cancelButton}
               {confirmButton}
@@ -100,49 +98,63 @@ var BootstrapModal = createClass({
 })
 
 var Example = React.createClass({
-  handleCancel: function () {
-    if (confirm('Are you sure you want to cancel?')) {
-      this.refs.modal.close()
-    }
+  handlerOnConfirm: function () {
+    this.refs.modal.CLOSE()
   },
 
-  openModal: function () {
-    this.refs.modal.open()
+  handlerOnCancel: function () {
+    confirm('Are you sure you want to cancel?') && this.refs.modal.CLOSE()
   },
 
-  closeModal: function () {
-    this.refs.modal.close()
+  handlerOnHidden: function () {
+    console.log("The modal has been dismissed!")
   },
 
-  handleModalDidClose: function () {
-    alert("The modal has been dismissed!")
+  handlerOnClick: function () {
+    this.refs.modal.OPEN()
   },
 
   render: function () {
+    {
+      /*
+       * ref 是组件 Example 的特殊属性
+       * ref 不会像 confirm, cancel 等属性传递给组件 Example 的子组件 BootstrapModal 的 props
+       * */
+    }
     var modal = (
       <BootstrapModal
         ref="modal"
-        confirm="OK"
-        cancel="Cancel"
-        onCancel={this.handleCancel}
-        onConfirm={this.closeModal}
-        onHidden={this.handleModalDidClose}
-        title="Hello, Bootstrap!"
+
+        confirm={this.props.confirm}
+        cancel={this.props.cancel}
+
+        onConfirm={this.handlerOnConfirm}
+        onCancel={this.handlerOnCancel}
+        onHidden={this.handlerOnHidden}
+
+        title={this.props.title}
       >
-        This is a React component powered by jQuery and Bootstrap!
+        {this.props.content}
       </BootstrapModal>
     )
 
     return (
-      <div className="example">
+      <div className="main">
         {modal}
-        <BootstrapButton onClick={this.openModal} className="btn-default">
-          Open modal
+        <BootstrapButton onClick={this.handlerOnClick} className="btn-default">
+          {this.props.text}
         </BootstrapButton>
       </div>
     )
   }
 })
 
-var content = <Example />
+var content =
+  <Example
+    confirm="OK"
+    cancel="Cancel"
+    title="Hello, Bootstrap!"
+    content="This is a React component powered by jQuery and Bootstrap!"
+    text="Open modal"
+  />
 render(content, root)
