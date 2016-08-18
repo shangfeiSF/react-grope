@@ -26,7 +26,7 @@ var TransitionDemo = React.createClass({
 
   render: function () {
     var pos = 0
-    var colors = ['red', 'gray', 'blue']
+    var colors = ['green', 'cyan', 'yellow']
 
     var children = []
     for (var i = this.state.current; i < this.state.current + colors.length; i++) {
@@ -35,13 +35,13 @@ var TransitionDemo = React.createClass({
         background: colors[i % colors.length]
       }
       pos++
-      children.push(<div key={i} className="animateItem" style={style}>{i}</div>)
+      children.push(<div key={i} className="transitionItem" style={style}>{i}</div>)
     }
     return (
       <CSSTransitionGroup
-        className="animateExample"
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}
+        className="transitionExample"
+        transitionEnterTimeout={1000}
+        transitionLeaveTimeout={1000}
         transitionName="example">
         {children}
       </CSSTransitionGroup>

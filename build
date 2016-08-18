@@ -17,7 +17,7 @@ var options = nopt({
   'a': ['--all', 'true']
 }, process.argv, 2)
 
-var main = path.join(process.cwd(), 'main')
+var main = path.join(process.cwd(), 'build')
 
 if (options.all) {
   fs.readdirAsync(main)
@@ -43,8 +43,21 @@ if (options.all) {
         if (error) {
           console.error('exec error:' + error)
         } else {
-          stdout && console.log('Finish：' + stdout)
-          stderr && console.error(stderr)
+          if (stdout) {
+            console.log('Finish：' + stdout)
+
+            var command = ['grunt', 'copy'].join(' ')
+            cp.exec(command, {cwd: path.join(process.cwd())}, function (error, stdout, stderr) {
+              if (error) {
+                console.error('exec error:' + error)
+              } else {
+                stdout && console.log('Finish：' + stdout)
+                stderr && console.error(stderr)
+              }
+            })
+          } else if (stderr) {
+            stderr && console.error(stderr)
+          }
         }
       })
     })

@@ -1,44 +1,39 @@
-.example-enter,
-.example-leave {
-    -webkit-transition: all .25s;
-    transition: all .25s;
+.transitionExample {
+    position: relative;
+    display: block;
+    width: 360px;
+    height: 120px;
 }
 
-.example-enter,
-.example-leave.example-leave-active {
-    opacity: 0.01;
-}
-
-.example-leave.example-leave-active {
-    margin-left: -128px;
+.transitionItem {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    -webkit-transition: all .8s;
+    transition: all .8s;
 }
 
 .example-enter {
-    margin-left: 128px;
+    margin-left: 120px;
+    opacity: 0.01;
 }
 
-.example-enter.example-enter-active,
+.example-enter.example-enter-active {
+    margin-left: 0;
+    opacity: 1;
+}
+
 .example-leave {
     margin-left: 0;
     opacity: 1;
 }
 
-.animateExample {
-    display: block;
-    height: 128px;
-    position: relative;
-    width: 384px;
-}
-
-.animateItem {
-    color: white;
-    font-size: 36px;
-    font-weight: bold;
-    height: 128px;
-    line-height: 128px;
-    position: absolute;
-    text-align: center;
-    -webkit-transition: all .25s; /* TODO: make this a move animation */
-    transition: all .25s; /* TODO: make this a move animation */
-    width: 128px;
+.example-leave.example-leave-active {
+    opacity: 0.01;
+    margin-left: -120px;
 }
