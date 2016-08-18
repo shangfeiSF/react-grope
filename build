@@ -1,13 +1,17 @@
 #!/usr/bin/env node
-
 var fs = require('fs')
 var path = require('path')
 var cp = require('child_process')
 
 var nopt = require('nopt')
+var colors = require('colors')
 var Promise = require('bluebird')
 
 Promise.promisifyAll(fs)
+var execAsync = Promise.promisify(cp.exec, {
+  context: cp,
+  multiArgs: true
+})
 
 var options = nopt({
   'input': Array,
@@ -17,68 +21,122 @@ var options = nopt({
   'a': ['--all', 'true']
 }, process.argv, 2)
 
-var main = path.join(process.cwd(), 'build')
+var tasksInfo = {}
 
-if (options.all) {
-  fs.readdirAsync(main)
+var gruntTask = function (command, taskname, collect) {
+  var command = ['grunt', [command, ':', taskname].join('')].join(' ')
+
+  return execAsync(command, {cwd: path.join(process.cwd())})
+    .then(function (args) {
+      var result = null
+
+      if (args.length == 3) {
+        collect['[' + command + '] -- error'] = args[0]
+      }
+
+      if (args.length == 2) {
+        collect['[' + command + '] -- stdout'] = args[0]
+        collect['[' + command + '] -- stderr'] = args[1]
+        result = taskname
+      }
+
+      return result
+    })
+}
+
+var main = function (dirsInput) {
+  console.log('Begin....'.magenta)
+
+  var mainDir = path.join(process.cwd(), 'main')
+
+  var dirsInput = dirsInput ? dirsInput.map(function (dirInput) {
+    return dirInput.split('/')[1]
+  }) : dirsInput
+
+  fs.readdirAsync(mainDir)
     .filter(function (dir) {
-      return fs.statAsync(path.join(main, dir))
+      return fs.statAsync(path.join(mainDir, dir))
         .then(function (stat) {
-          return stat.isDirectory()
+          var exist = dirsInput ? dirsInput.indexOf(dir) > -1 : true
+          return exist && stat.isDirectory()
         })
     })
+
     .then(function (dirs) {
       return dirs.map(function (dir) {
         return {
-          name: dir,
-          input: path.join(main, dir, 'src'),
-          output: path.join(main, dir, 'build'),
+          taskname: dir,
+          input: path.join(mainDir, dir, 'src'),
+          output: path.join(mainDir, dir, 'build'),
         }
       })
     })
-    .map(function (info) {
+
+    .mapSeries(function (info) {
+      console.log(('[Start] --- ' + info.taskname).yellow)
+
+      var collect = tasksInfo[info.taskname] = {}
+
       var command = ['babel'].concat([info.input, '-d', info.output]).join(' ')
 
-      cp.exec(command, {cwd: path.join(process.cwd())}, function (error, stdout, stderr) {
-        if (error) {
-          console.error('exec error:' + error)
-        } else {
-          if (stdout) {
-            console.log('Finish：' + stdout)
+      var task = execAsync(command, {cwd: path.join(process.cwd())})
+        .then(function (args) {
+          var result = null
 
-            var command = ['grunt', 'copy'].join(' ')
-            cp.exec(command, {cwd: path.join(process.cwd())}, function (error, stdout, stderr) {
-              if (error) {
-                console.error('exec error:' + error)
-              } else {
-                stdout && console.log('Finish：' + stdout)
-                stderr && console.error(stderr)
-              }
-            })
-          } else if (stderr) {
-            stderr && console.error(stderr)
+          if (args.length == 3) {
+            collect['[babel] -- error'] = args[0]
           }
-        }
+
+          if (args.length == 2) {
+            collect['[babel] -- stdout'] = args[0]
+            collect['[babel] -- stderr'] = args[1]
+            result = info.taskname
+          }
+
+          return result
+        })
+
+        .then(function (taskname) {
+          return taskname ? gruntTask('copy', taskname, collect) : null
+        })
+
+        .then(function (taskname) {
+          return taskname ? gruntTask('clear', taskname, collect) : null
+        })
+
+        .then(function (taskname) {
+          console.log(('[End] --- ' + taskname + '\n').green)
+        })
+
+      return task
+    })
+
+    .then(function () {
+      console.log('------------------------------------------------------'.white)
+
+      Object.keys(tasksInfo).forEach(function (taskname) {
+        var info = tasksInfo[taskname]
+
+        Object.keys(info).forEach(function (key) {
+          if (info[key].length) {
+            var msg = ['[', taskname, '] -- ', key, ':\n'].join('')
+
+            console.log(colors['magenta'](msg))
+            console.log(colors['green'](info[key]))
+          }
+        })
+
+        console.log('------------------------------------------------------'.white)
       })
     })
 }
-else {
-  if (options.input.length) {
-    for (var i = 0; i < options.input.length; i++) {
-      var command = ['babel', 'src', '-d', 'build'].join(' ')
-      var dir = options.input[i]
 
-      cp.exec(command, {cwd: path.join(process.cwd(), dir)}, function (error, stdout, stderr) {
-        if (error) {
-          console.error('exec error:' + error)
-        } else {
-          stdout && console.log('Finish：' + stdout)
-          stderr && console.error(stderr)
-        }
-      })
-    }
-  }
-  else {
-    console.error('need input less file')
-  }
+if (options.all) {
+  main()
+}
+else if (options.input.length) {
+  main(options.input)
+}
+else {
+  console.log('Need input less file'.red)
 }
