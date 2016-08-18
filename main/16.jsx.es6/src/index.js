@@ -4,9 +4,10 @@ var component = React.Component
 
 class ExampleApplication extends component {
   render() {
-    var elapsed = Math.round(this.props.elapsed / 100)
+    var {elapsed, message} = this.props
+    var elapsed = Math.round(elapsed / 100)
     var seconds = elapsed / 10 + (elapsed % 10 ? '' : '.0' )
-    var message = `React has been successfully running for ${seconds} seconds.`
+    var message = `${message} + ${seconds}`
 
     return <p>{message}</p>
   }
@@ -15,8 +16,9 @@ class ExampleApplication extends component {
 var start = new Date().getTime()
 
 setInterval(() => {
-  var content = <ExampleApplication elapsed={
-    new Date().getTime() - start
-  }/>
+  var content = <ExampleApplication
+    elapsed={new Date().getTime() - start }
+    message="React has been successfully running for"
+  />
   render(content, root);
 }, 50)
