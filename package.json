@@ -19,12 +19,14 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-open": "^0.2.3",
+    "literalify": "^0.4.0",
     "matchdep": "^0.3.0",
     "nopt": "^3.0.6"
   },
   "scripts": {
     "buildall": "node ./build  -a",
-    "build15": "browserify ./main/15.useCommonjs/index.js -t babelify -o ./main/15.useCommonjs/index.bundle.js"
+    "build15": "browserify ./main/15.useCommonjs/index.js -t babelify -o ./main/15.useCommonjs/index.bundle.js",
+    "build22": "browserify ./main/22.server.render/app.js -t babelify -o ./main/22.server.render/app.bundle.js"
   },
   "author": "shangfei.SF",
   "license": "ISC"
