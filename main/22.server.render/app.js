@@ -21,13 +21,13 @@ module.exports = React.createClass({
   },
 
   render: function () {
-    var list = React.children.map(this.state.items, function (item) {
+    var list = React.Children.map(this.state.items, function (item) {
       return <li>{item}</li>
     })
 
     return (
       <div>
-        <button onClick={this.handleClick} disabled={this.state.disabled}>Add Item</button>
+        <button onClick={this.handleClick} disabled={this.state.disabled}>Add New Item</button>
         {list}
       </div>
     )

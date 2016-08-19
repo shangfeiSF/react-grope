@@ -1,6 +1,8 @@
 .idea/
+npm-debug.log
+_build_/
 node_modules/
 main/*/build
 main/*/index.bundle.js
-npm-debug.log
-_build_
+main/*/app.build.js
+main/*/server.build.js
