@@ -9,23 +9,29 @@ var App = createClass({
     }
   },
 
-  handlerRequestChange: function (newValue) {
-    this.setState({
-      message: newValue
-    })
+  _link_: function () {
+    var self = this
+
+    var requestChange = function (newValue) {
+      self.setState({
+        message: newValue
+      })
+    }
+
+    return {
+      value: this.state.message,
+      requestChange: requestChange
+    }
   },
 
   render: function () {
-    var message = this.state.message
-
-    var valueLink = {
-      value: this.state.message,
-      requestChange: this.handlerRequestChange
-    }
+    var link = this._link_()
 
     return (<div>
-      <p>{message}</p>
-      <input type="text" valueLink={valueLink}/>
+      <p>{this.state.message}</p>
+      <input type="text"
+        valueLink={link}
+      />
     </div>)
   }
 })

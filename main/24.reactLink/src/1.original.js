@@ -16,11 +16,16 @@ var App = createClass({
   },
 
   render: function () {
-    var message = this.state.message
+    var value = this.state.message
+    var handlerOnChange = this.handlerOnChange
+
     return (<div>
-      <p>{message}</p>
-      <input type="text" value={message} onChange={this.handlerOnChange}/>
-    </div> )
+      <p>{this.state.message}</p>
+      <input type="text"
+        value={value}
+        onChange={handlerOnChange}
+      />
+    </div>)
   }
 })
 

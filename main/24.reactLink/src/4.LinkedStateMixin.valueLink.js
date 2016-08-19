@@ -12,10 +12,13 @@ var App = createClass({
   mixins: [React.addons.LinkedStateMixin],
 
   render: function () {
-    var message = this.state.message
+    var link = this.linkState('message')
+
     return (<div>
-      <p>{message}</p>
-      <input type="text" valueLink={this.linkState('message')}/>
+      <p>{this.state.message}</p>
+      <input type="text"
+        valueLink={link}
+      />
     </div>)
   }
 })
