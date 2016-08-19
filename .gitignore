@@ -6,3 +6,4 @@ main/*/build
 main/*/index.bundle.js
 main/*/app.build.js
 main/*/server.build.js
+main/*/browser.build.js
