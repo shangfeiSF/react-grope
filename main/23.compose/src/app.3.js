@@ -95,7 +95,7 @@ var List = createClass({
         </thead>
         <tbody>{this.makeRows()}</tbody>
       </table>
-    );
+    )
   }
 })
 
@@ -152,6 +152,10 @@ var App = createClass({
   }
 })
 
+var config = {
+  search: 'ball',
+  only: true
+}
 var data = [
   {category: 'Sporting Goods', price: '$49.99', stocked: true, name: 'Football'},
   {category: 'Electronics', price: '$99.99', stocked: true, name: 'Mezus 5'},
@@ -160,9 +164,5 @@ var data = [
   {category: 'Sporting Goods', price: '$29.99', stocked: false, name: 'Basketball'},
   {category: 'Electronics', price: '$199.99', stocked: true, name: 'Nexus 7'}
 ]
-var config = {
-  search: 'ball',
-  only: true
-}
 var content = <App data={data} config={config}/>
 render(content, root)

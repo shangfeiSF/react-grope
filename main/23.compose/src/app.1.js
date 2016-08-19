@@ -17,7 +17,7 @@ var Search = createClass({
 })
 
 var List = createClass({
-  show: function () {
+  show: function (item) {
     var show = true
     return show
   },
