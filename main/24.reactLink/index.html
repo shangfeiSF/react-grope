@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../../assets/react.min.js"></script>
+    <script src="../../assets/react-with-addons.min.js"></script>
+    <script src="../../assets/react-dom.min.js"></script>
+    <style>
+        .container {
+            float: left;
+            margin-right: 20px;
+            padding: 10px;
+            border: 1px solid #000;
+        }</style>
+</head>
+<body>
+<div class="container">
+    <h3>Original</h3>
+    <div id="original"></div>
+</div>
+<script type="text/javascript" src="build/1.original.js"></script>
+
+<div class="container">
+    <h3>LinkedStateMixin</h3>
+    <div id="LinkedStateMixin"></div>
+</div>
+<script type="text/javascript" src="build/2.LinkedStateMixin.js"></script>
+
+<div class="container">
+    <h3>valueLink</h3>
+    <div id="valueLink"></div>
+</div>
+<script type="text/javascript" src="build/3.valueLink.js"></script>
+
+<div class="container">
+    <h3>LinkedStateMixin.valueLink</h3>
+    <div id="LinkedStateMixin.valueLink"></div>
+</div>
+<script type="text/javascript" src="build/4.LinkedStateMixin.valueLink.js"></script>
+</body>
+</html>
