@@ -2,10 +2,6 @@ var fs = require('fs')
 var path = require('path')
 var matchdep = require('matchdep')
 
-var options = {
-  port: 8080
-}
-
 function makeConfig() {
   var mainDir = path.join(process.cwd(), 'main')
 
@@ -23,7 +19,7 @@ function makeConfig() {
         files: [
           {
             cwd: './main/' + dir,
-            src: '**/*',
+            src: ['build/*', '*', '!src'],
             dest: './_build_/' + dir,
             expand: true
           },
@@ -40,10 +36,6 @@ module.exports = function (grunt) {
   var config = makeConfig()
 
   grunt.initConfig({
-    options: options,
-
-    pkg: grunt.file.readJSON('package.json'),
-
     copy: config.copy,
 
     clean: config.clean,
@@ -51,14 +43,14 @@ module.exports = function (grunt) {
     connect: {
       server: {
         options: {
-          port: options.port
+          port: 8080
         }
       }
     },
 
     open: {
       server: {
-        path: 'http://localhost:<%= options.port %>/all.html'
+        path: 'http://localhost:8080/all.html'
       }
     },
 
