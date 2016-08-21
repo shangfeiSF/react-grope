@@ -4,12 +4,15 @@ var createClass = React.createClass
 
 var BootstrapButton = createClass({
   render: function () {
+    var {className, ...rest} = {...this.props}
+    var className = className || '' + ' btn'
+
     return (
       <a
-        {...this.props}
+        {...rest}
         href="javascript:void(0);"
         role="button"
-        className={(this.props.className || '') + ' btn'}
+        className={className}
       />
     )
   }
