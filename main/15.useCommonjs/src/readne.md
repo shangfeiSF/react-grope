@@ -1,0 +1,1 @@
+This is a special demo which no need src/index.js
