@@ -4,13 +4,13 @@
 
 `npm install -g babel-cli grunt-cli`
 
-### Second we need node_modules in `react-grope, so do follws
+### Second we need node_modules in react-grope, so do follows
 
 `cd  path/to/react-grope`
 
 `npm install`
 
-### Third we use npm-script to build main/*, jsut do start
+### Third we use npm-script to build main/*, just start
 
 `npm start`
 
