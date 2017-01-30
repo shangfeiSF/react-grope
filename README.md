@@ -1,10 +1,28 @@
 # react-grope
 
+### First we need Babel & Grunt in global, so do follows
+
+`npm install -g babel-cli grunt-cli`
+
+### Second we need node_modules in `react-grope, so do follws
+
+`cd  path/to/react-grope`
+
+`npm install`
+
+### Third we use npm-script to build main/*, jsut do start
+
+`npm start`
+
+### Last, jsut grunt
+
+`grunt`
+
 ## License
 
 (The MIT License)
 
-Copyright (c) 2010 [shangfeiSF](tony20100125@126.com)
+Copyright (c) 2017 [shangfeiSF](tony20100125@126.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

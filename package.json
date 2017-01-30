@@ -27,6 +27,7 @@
     "nopt": "^3.0.6"
   },
   "scripts": {
+    "start": "npm run build15 | npm run buildall",
     "buildall": "node ./build  -a",
     "build15": "browserify ./main/15.useCommonjs/index.js -t babelify -o ./main/15.useCommonjs/index.bundle.js"
   },
